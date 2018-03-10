@@ -1,17 +1,22 @@
 syntax = "proto3";
+option optimize_for = SPEED;
 
 package knn;
 
-message Data {
+message Header {
     uint32 id               = 1;
     // description
-    string descr            = 2;
+    string description      = 2;
     // size of vector
     uint32 vsize            = 3;
     // number of vectors
     uint32 nsize            = 4;
     // delta (training distance)
     float delta             = 5;
-    // data
-    repeated float data     = 6;
+}
+
+message Vector {
+    uint32 id               = 1;
+    uint32 class_id         = 2;
+    repeated float data     = 3;
 }

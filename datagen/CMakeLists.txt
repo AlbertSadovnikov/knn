@@ -1,5 +1,4 @@
 
-
 set(BOOST_ROOT /opt/boost)
 
 set(Boost_USE_STATIC_LIBS ON)

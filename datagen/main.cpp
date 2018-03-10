@@ -3,10 +3,10 @@
 
 #include "rand.h"
 #include "dist.h"
+#include "data.pb.h"
 
 namespace po = boost::program_options;
 using namespace std;
-
 
 int main(int ac, const char** av) {
 
@@ -40,12 +40,12 @@ int main(int ac, const char** av) {
 
     cout << "------------------------------------" << '\n';
 
-    const auto a = random_vector<float>(dim);
-    copy(begin(a), end(a), ostream_iterator<float>(cout, ", ")); cout << "\b\b\n";
-    const auto b = random_vector<float>(dim);
-    copy(begin(b), end(b), ostream_iterator<float>(cout, ", ")); cout << "\b\b\n";
-
-    cout << dist(a, b) << endl;
+//    auto data = new knn::Data();
+//    data->set_id(7);
+//    data->set_descr("This is a test data.");
+//    data->set_vsize(dim);
+//    data->set_nsize(num);
+//    data->set_data(0, 1);
 
 
 
