@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package knn;
+
+message Data {
+    uint32 id               = 1;
+    // description
+    string descr            = 2;
+    // size of vector
+    uint32 vsize            = 3;
+    // number of vectors
+    uint32 nsize            = 4;
+    // delta (training distance)
+    float delta             = 5;
+    // data
+    repeated float data     = 6;
+}
