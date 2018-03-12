@@ -3,8 +3,8 @@
 #include <vector>
 #include <random>
 
-template<class T> constexpr T MIN_VAL = T(-1);
-template<class T> constexpr T MAX_VAL = T(1);
+template<class T> constexpr T MIN_VAL = T(-10);
+template<class T> constexpr T MAX_VAL = T(10);
 
 template<class T>
 T uniform_random_float(T min_val = MIN_VAL<T>, T max_val = MAX_VAL<T>) {
