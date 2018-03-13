@@ -7,7 +7,8 @@ find_package(Boost 1.66 COMPONENTS program_options filesystem REQUIRED)
 
 include_directories(${Boost_INCLUDE_DIR})
 
-set(DATAGEN_SRC main.cpp)
+set(BENCHMARK_SRC main.cpp)
 
-add_executable(datagen ${DATAGEN_SRC})
-target_link_libraries(datagen proto common knn ${Boost_LIBRARIES})
+add_executable(benchmark ${BENCHMARK_SRC})
+
+target_link_libraries(benchmark proto common knn ${Boost_LIBRARIES})

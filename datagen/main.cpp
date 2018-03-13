@@ -17,7 +17,7 @@ vector<vector<float>> generate_data(unsigned dim, unsigned num, float delta) {
         const auto v = random_vector<float>(dim);
         bool flag = true;
         for (const auto& item : ret) {
-            if (euclidean_intrinsic_float<512>(item.data(), v.data())/*dist(item, v)*/ < delta) {
+            if (knn::distance<512>(item.data(), v.data()) < delta) {
                 flag = false;
                 break;
             }
@@ -42,12 +42,12 @@ int main(int ac, const char** av) {
                 ("delta", po::value<float>()->default_value(1.f), "delta");
 
         po::store(po::parse_command_line(ac, av, desc), vm);
-        po::notify(vm);
 
         if (vm.count("help")) {
             cout << desc << "\n";
             return 1;
         }
+        po::notify(vm);
     }
     catch(const po::error& e) {
         cout << e.what();
@@ -82,30 +82,45 @@ int main(int ac, const char** av) {
 
     // Serialization
     {
-        knn::common::Serializer srl(filename);
+        ofstream os(filename, std::ofstream::binary);
         auto h = make_unique<knn::Header>();
         h->set_nsize(num);
         h->set_vsize(dim);
         h->set_id(0);
         h->set_description("Test data");
-        srl.Write(*h);
-        // Serialize
+        if (!knn::common::Serialize(os, *h)) {
+            cout << "Error writing header!" << '\n';
+            return 1;
+        }
         auto pb_v = make_unique<knn::Vector>();
         for (uint32_t i = 0; i < data.size(); i++) {
             pb_v->set_id(i);
             pb_v->set_class_id(i);
             google::protobuf::RepeatedField<float> rf(data[i].begin(), data[i].end());
             pb_v->mutable_data()->Swap(&rf);
-            srl.Write(*pb_v);
+            if (!knn::common::Serialize(os, *pb_v)) {
+                cout << "Error writing vector " << i << '\n';
+                return 1;
+            }
         }
     }
 
     // Verification
     {
-        knn::common::Deserializer dsr(filename);
-        auto h = dsr.Read<knn::Header>();
+        ifstream is(filename, std::ifstream::binary);
+        google::protobuf::io::IstreamInputStream input_stream(&is);
+
+        const auto h = knn::common::Deserialize<knn::Header>(input_stream);
+        if (!h) {
+            cout << "Verification failed reading header" << '\n';
+            return 1;
+        }
         for (uint32_t i = 0; i < h->nsize(); i++) {
-            const auto v = dsr.Read<knn::Header>();
+            const auto v = knn::common::Deserialize<knn::Vector>(input_stream);
+            if (!v) {
+                cout << "Verification failed at " << i << '\n';
+                return 1;
+            }
         }
     }
 
