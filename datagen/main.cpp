@@ -1,6 +1,7 @@
 #include <boost/program_options.hpp>
 #include <boost/filesystem.hpp>
 #include <iostream>
+#include <omp.h>
 
 #include "rand.h"
 #include "dist.h"
@@ -15,14 +16,13 @@ vector<vector<float>> generate_data(unsigned dim, unsigned num, float delta) {
     vector<vector<float>> ret;
     while (ret.size() < num) {
         const auto v = random_vector<float>(dim);
-        bool flag = true;
-        for (const auto& item : ret) {
-            if (knn::distance<512>(item.data(), v.data()) < delta) {
-                flag = false;
-                break;
-            }
+        volatile bool flag = false;
+#pragma omp parallel for shared(flag)
+        for (size_t i = 0; i < ret.size(); i++) {
+            if (flag) continue;
+            if (knn::distance<512>(ret[i].data(), v.data()) < delta) flag = true;
         }
-        if (!flag) continue;
+        if (flag) continue;
         ret.push_back(v);
         if (ret.size() % 1000 == 0) cout << ret.size() << '\n';
     }
@@ -38,7 +38,7 @@ int main(int ac, const char** av) {
                 ("help", "produce help message")
                 ("file", po::value<string>()->required(), "output file name")
                 ("dim", po::value<unsigned>()->default_value(512), "vector dimension")
-                ("num", po::value<unsigned>()->default_value(0x1000), "number of vectors")
+                ("num", po::value<unsigned>()->default_value(0x100000), "number of vectors")
                 ("delta", po::value<float>()->default_value(1.f), "delta");
 
         po::store(po::parse_command_line(ac, av, desc), vm);
