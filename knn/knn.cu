@@ -29,16 +29,16 @@ void printCudaDevices() {
 }
 
 
-__global__ void knn_gpu(uint32_t V, uint32_t N, uint32_t Q, uint32_t K,
-                        float* data, float* query, uint32_t* idx, float* dist) {
+__global__ void knn_gpu(unsigned V, unsigned N, unsigned Q, unsigned K,
+                        float* data, float* query, unsigned* idx, float* dist) {
 
 }
 
 
 
 void knn_gpu_test(unsigned gpu_index,
-                  uint32_t V, uint32_t N, uint32_t Q, uint32_t K,
-                  float* data, float* query, uint32_t* idx, float* dist) {
+                  unsigned V, unsigned N, unsigned Q, unsigned K,
+                  float* data, float* query, unsigned* idx, float* dist) {
 
     // get devices count
     int devicesCount;

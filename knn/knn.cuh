@@ -1,6 +1,4 @@
 #pragma once
-#include <cstdint>
-#include <iostream>
 
 
 namespace knn {
@@ -8,7 +6,7 @@ namespace knn {
     void printCudaDevices();
 
     void knn_gpu_test(unsigned gpu_index,
-                      uint32_t V, uint32_t N, uint32_t Q, uint32_t K,
-                      float* data, float* query, uint32_t* idx, float* dist);
+                      unsigned V, unsigned N, unsigned Q, unsigned K,
+                      float* data, float* query, unsigned* idx, float* dist);
 
 }

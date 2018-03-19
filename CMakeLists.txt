@@ -9,7 +9,7 @@ project(knn LANGUAGES CUDA CXX)
 # boost dependency
 set(BOOST_ROOT /opt/boost)
 set(Boost_USE_STATIC_LIBS ON)
-find_package(Boost 1.66 COMPONENTS program_options filesystem REQUIRED)
+find_package(Boost 1.60 COMPONENTS program_options filesystem REQUIRED)
 
 
 add_subdirectory(proto)
