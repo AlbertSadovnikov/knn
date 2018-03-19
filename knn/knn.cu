@@ -69,7 +69,7 @@ void knn_gpu_test(unsigned gpu_index,
     float* d_dist;
     cudaMalloc((void**)&d_dist, K * Q * sizeof(float));
 
-    //knn_gpu<<<>>>(V, N, Q, K, data, query, idx, dist);
+
 
     // free
     cudaFree(d_dist);
