@@ -7,7 +7,6 @@
 
 
 namespace knn {
-
 // knn routines
 // in order insertion
 // val  - value to insert

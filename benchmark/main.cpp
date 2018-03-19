@@ -6,19 +6,24 @@
 #include "data.pb.h"
 #include "serialize.h"
 #include "knn.h"
+#include "knn.cuh"
+
 
 namespace po = boost::program_options;
 namespace fs = boost::filesystem;
 using namespace std;
 
+
 int main(int ac, const char** av) {
+
     po::variables_map vm;
     try {
         po::options_description desc("Allowed options");
         desc.add_options()
                 ("help", "produce help message")
                 ("data", po::value<string>()->required(), "input data file name")
-                ("test", po::value<string>(), "input test file name");
+                ("test", po::value<string>(), "input test file name")
+                ("gpu", po::value<unsigned>()->default_value(0), "gpu device");
 
         po::store(po::parse_command_line(ac, av, desc), vm);
 
@@ -48,7 +53,7 @@ int main(int ac, const char** av) {
     constexpr uint32_t V = 512;
     constexpr uint32_t N = 65536;
     constexpr uint32_t K = 1;
-    constexpr uint32_t Q = 1000;
+    constexpr uint32_t Q = 1024;
 
     const auto data = make_unique<float[]>(V * N);
     const auto query = make_unique<float[]>(V * Q);
@@ -111,6 +116,11 @@ int main(int ac, const char** av) {
             return 1;
         }
     }
-    cout << "Response verified." << '\n';
+    cout << "Response verified." << "\n\n";
+
+    cout << "----------- CUDA version ---------------\n";
+    const auto gpu_index = vm["gpu"].as<unsigned>();
+    knn::knn_gpu_test(gpu_index, V, N, Q, K, data.get(), query.get(), indexes.get(), dist.get());
+
     return 0;
 }
